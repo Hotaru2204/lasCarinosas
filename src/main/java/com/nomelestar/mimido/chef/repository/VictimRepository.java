@@ -1,0 +1,7 @@
+package com.nomelestar.mimido.chef.repository;
+
+import com.nomelestar.mimido.chef.model.Victim;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface VictimRepository extends JpaRepository<Victim, Long> {
+}

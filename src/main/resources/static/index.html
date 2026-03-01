@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Las Cariñosas - Victim Console</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        input, button { margin: 0.25rem; padding: 0.4rem; }
+        ul { padding-left: 1rem; }
+        .row { margin-bottom: 0.75rem; }
+    </style>
+</head>
+<body>
+<h1>Las Cariñosas - Victim Console</h1>
+<p>Paste a Keycloak Bearer token with role ADMIN/DETECTIVE/ANALYST.</p>
+<div class="row">
+    <input id="token" placeholder="Bearer token" size="90">
+    <button onclick="loadVictims()">Load Victims</button>
+</div>
+<div class="row">
+    <input id="name" placeholder="Name">
+    <input id="family" placeholder="Family">
+    <input id="status" placeholder="Status">
+    <input id="location" placeholder="Location">
+    <input id="deathDateTime" placeholder="2026-03-01T22:00:00">
+    <button onclick="createVictim()">Create</button>
+</div>
+<ul id="victims"></ul>
+<script>
+    function headers() {
+        const csrfToken = document.cookie.split('; ').find(row => row.startsWith('XSRF-TOKEN='))?.split('=')[1] || '';
+        return {"Content-Type": "application/json", "Authorization": "Bearer " + document.getElementById("token").value, "X-XSRF-TOKEN": decodeURIComponent(csrfToken)};
+    }
+
+    async function loadVictims() {
+        const response = await fetch('/victims', {headers: headers()});
+        const data = await response.json();
+        const list = document.getElementById('victims');
+        list.innerHTML = '';
+        data.forEach(v => {
+            const item = document.createElement('li');
+            item.textContent = `${v.id} - ${v.name} (${v.family}) at ${v.location}`;
+            list.appendChild(item);
+        });
+    }
+
+    async function createVictim() {
+        const body = {
+            name: document.getElementById('name').value,
+            family: document.getElementById('family').value,
+            status: document.getElementById('status').value,
+            location: document.getElementById('location').value,
+            deathDateTime: document.getElementById('deathDateTime').value
+        };
+        await fetch('/victims', {method: 'POST', headers: headers(), body: JSON.stringify(body)});
+        await loadVictims();
+    }
+</script>
+</body>
+</html>
