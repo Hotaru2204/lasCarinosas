@@ -29,7 +29,8 @@
 <ul id="victims"></ul>
 <script>
     function headers() {
-        return {"Content-Type": "application/json", "Authorization": "Bearer " + document.getElementById("token").value};
+        const csrfToken = document.cookie.split('; ').find(row => row.startsWith('XSRF-TOKEN='))?.split('=')[1] || '';
+        return {"Content-Type": "application/json", "Authorization": "Bearer " + document.getElementById("token").value, "X-XSRF-TOKEN": decodeURIComponent(csrfToken)};
     }
 
     async function loadVictims() {

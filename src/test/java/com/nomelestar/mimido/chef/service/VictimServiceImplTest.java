@@ -24,6 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class VictimServiceImplTest {
+    private static final LocalDateTime FIXED_DATE = LocalDateTime.of(2024, 3, 1, 22, 0, 0);
 
     @Mock
     private VictimRepository victimRepository;
@@ -41,7 +42,7 @@ class VictimServiceImplTest {
         createDTO.setFamily("Gonzaga");
         createDTO.setStatus("DECEASED");
         createDTO.setLocation("Luxury Bathroom");
-        createDTO.setDeathDateTime(LocalDateTime.now());
+        createDTO.setDeathDateTime(FIXED_DATE);
 
         Victim victim = new Victim();
         victim.setId(1L);
@@ -67,7 +68,7 @@ class VictimServiceImplTest {
         updateDTO.setFamily("Aris");
         updateDTO.setStatus("DECEASED");
         updateDTO.setLocation("Study");
-        updateDTO.setDeathDateTime(LocalDateTime.now());
+        updateDTO.setDeathDateTime(FIXED_DATE);
 
         assertThatThrownBy(() -> victimService.update(99L, updateDTO))
                 .isInstanceOf(ResourceNotFoundException.class)
